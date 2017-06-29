@@ -1,194 +1,141 @@
 package com.example.rahul.adfarm;
 
+        import android.app.Dialog;
+        import android.content.Context;
         import android.content.DialogInterface;
         import android.content.Intent;
         import android.os.Message;
+        import android.support.design.widget.FloatingActionButton;
         import android.support.v7.app.AlertDialog;
         import android.support.v7.app.AppCompatActivity;
         import android.os.Bundle;
         import android.view.Gravity;
         import android.view.LayoutInflater;
         import android.view.View;
-        import android.view.ViewGroup;
         import android.widget.Button;
-        import android.widget.EditText;
-        import android.widget.LinearLayout;
-        import android.widget.PopupWindow;
+        import android.widget.TextView;
         import android.widget.Toast;
+        import com.facebook.AccessToken;
+        import com.facebook.CallbackManager;
+        import com.facebook.FacebookCallback;
+        import com.facebook.FacebookException;
+        import com.facebook.FacebookSdk;
+        import com.facebook.GraphRequest;
+        import com.facebook.GraphResponse;
+        import com.facebook.login.LoginManager;
+        import com.facebook.login.LoginResult;
+        import com.facebook.login.widget.LoginButton;
 
-        import com.github.clans.fab.FloatingActionButton;
-        import com.github.clans.fab.FloatingActionMenu;
+        import org.json.JSONArray;
+        import org.json.JSONObject;
 
-        import com.github.clans.fab.FloatingActionMenu;
+        import java.lang.reflect.Array;
+        import java.util.Arrays;
 
+        import static android.R.id.content;
         import static android.R.id.input;
+        import static com.example.rahul.adfarm.R.layout.custom_dialog;
 
 public class PublisherPostActivity extends AppCompatActivity {
-    private FloatingActionMenu fam;
-    private FloatingActionButton fabTube,fabins,fabfb;
+    final Context context = this;
+    private Button facebookText;
+    private Button YoutubeText;
+    private CallbackManager callbackManager;
+
+    @Override
+    protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
+        super.onActivityResult(requestCode, responseCode, intent);
+
+        callbackManager.onActivityResult(requestCode, responseCode, intent);
+//        Intent i = new Intent(PublisherPostActivity.this,PageActivity.class);
+//        startActivity(i);
+//        finish();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_publisher_post);
 
-        fabfb=(FloatingActionButton)findViewById(R.id.fab2);
-        fabins=(FloatingActionButton)findViewById(R.id.fab3);
-        fabTube=(FloatingActionButton)findViewById(R.id.fab1);
-        fam=(FloatingActionMenu)findViewById(R.id.fab_menu);
+        callbackManager = CallbackManager.Factory.create();
+        //loginButton = (LoginButton) findViewById(R.id.login_button);
 
-        fam.setOnMenuToggleListener(new FloatingActionMenu.OnMenuToggleListener() {
+       // View vi = getLayoutInflater().inflate(R.layout.custom_dialog, null);
+        //facebookText = (Button) vi.findViewById(R.id.facebook);
+        //YoutubeText = (Button) vi.findViewById(R.id.youtube);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onMenuToggle(boolean opened) {
-                if (opened) {
-                   // showToast("Menu is opened");
-                } else {
-                   // showToast("Menu is closed");
-                }
+            public void onClick(View v) {
+                final Dialog dialog = new Dialog(context);
+                dialog.setContentView(custom_dialog);
+
+                dialog.setTitle("select one platform :");
+                Button dialogButton = (Button) dialog.findViewById(R.id.close);
+                facebookText = (Button)dialog.findViewById(R.id.facebook);
+                YoutubeText = (Button)dialog.findViewById(R.id.youtube);
+
+                facebookText.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        LoginManager.getInstance().logInWithReadPermissions(PublisherPostActivity.this, Arrays.asList("email","user_birthday","user_posts","pages_show_list"));
+                    }
+                });
+                // if button is clicked, close the custom dialog
+                dialogButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+                dialog.show();
             }
         });
-        //handling each floating action button clicked
-        fabins.setOnClickListener(onButtonClick());
-        fabTube.setOnClickListener(onButtonClick());
-        fabfb.setOnClickListener(onButtonClick());
 
-        fam.setOnClickListener(new View.OnClickListener() {
+
+        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
-            public void onClick(View view) {
-                if (fam.isOpened()) {
-                    fam.close(true);
-                }
+            public void onSuccess(LoginResult loginResult) {
+                graphRequest(loginResult.getAccessToken());
             }
-        });
-        fabfb.setOnClickListener(new View.OnClickListener() {
-            //@SuppressWarnings("deprecation")
-            public void onClick(final View view) {
-                LayoutInflater inflater=LayoutInflater.from(PublisherPostActivity.this);
-                View subView=inflater.inflate(R.layout.alert_dialog,null);
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(PublisherPostActivity.this);
-                builder.setView(subView);
-                builder.setTitle("Link for page to enter");
-                //final EditText input = new EditText(MainActivity.this);
-                final EditText link=(EditText)subView.findViewById(R.id.link);
-                link.setText("www.facebook.com/");
-                link.setSelection(link.getText().length());
-                builder.setPositiveButton("YES",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                            }
-                        });
-                // Setting Negative "NO" Button
-                builder.setNegativeButton("NO",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                // Write your code here to execute after dialog
-                                dialog.cancel();
-                            }
-                        });
-                // Showing Alert Message
-                builder.show();
-            }
-        });
-
-        fabins.setOnClickListener(new View.OnClickListener() {
-            //@SuppressWarnings("deprecation")
-            public void onClick(final View view) {
-                // Creating alert Dialog with one Button
-                AlertDialog.Builder alertDialog = new AlertDialog.Builder(PublisherPostActivity.this);
-                // AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
-                //Setting Dialog Message
-                alertDialog.setMessage("Link for page to enter");
-                final EditText input = new EditText(PublisherPostActivity.this);
-                input.setText("www.Instagram.com/");
-                input.setSelection(input.getText().length());
-
-                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.MATCH_PARENT);
-                input.setLayoutParams(lp);
-                alertDialog.setView(input);
-                alertDialog.setView(input);
-//                 Setting Positive "Yes" Button
-                alertDialog.setPositiveButton("YES",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                // Write your code here to execute after dialog
-                                Toast.makeText(getApplicationContext(),"Password Matched", Toast.LENGTH_SHORT).show();
-                                Intent myIntent1 = new Intent(view.getContext(),PublisherPostActivity.class);
-                                startActivityForResult(myIntent1, 0);
-                            }
-                        });
-                // Setting Negative "NO" Button
-                alertDialog.setNegativeButton("NO",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                // Write your code here to execute after dialog
-                                dialog.cancel();
-                            }
-                        });
-                // Showing Alert Message
-                alertDialog.show();
-            }
-        });
-        fabTube.setOnClickListener(new View.OnClickListener() {
-            //@SuppressWarnings("deprecation")
-            public void onClick(final View view) {
-                // Creating alert Dialog with one Button
-                AlertDialog.Builder alertDialog = new AlertDialog.Builder(PublisherPostActivity.this);
-                // AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
-                //Setting Dialog Message
-                alertDialog.setMessage("Link for page to enter");
-                final EditText input = new EditText(PublisherPostActivity.this);
-                input.setText("www.youtube.com/");
-                input.setSelection(input.getText().length());
-
-                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.MATCH_PARENT);
-                input.setLayoutParams(lp);
-                alertDialog.setView(input);
-                alertDialog.setView(input);
-//                 Setting Positive "Yes" Button
-                alertDialog.setPositiveButton("YES",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                // Write your code here to execute after dialog
-                                Toast.makeText(getApplicationContext(),"Password Matched", Toast.LENGTH_SHORT).show();
-                                Intent myIntent1 = new Intent(view.getContext(),PublisherPostActivity.class);
-                                startActivityForResult(myIntent1, 0);
-                            }
-                        });
-                // Setting Negative "NO" Button
-                alertDialog.setNegativeButton("NO",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                // Write your code here to execute after dialog
-                                dialog.cancel();
-                            }
-                        });
-                // Showing Alert Message
-                alertDialog.show();
-            }
-        });
-    }
-    private View.OnClickListener onButtonClick() {
-        return new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                if (view == fabfb) {
-                    //showToast("Button Add clicked");
-                } else if (view == fabins) {
-                    //showToast("Button Delete clicked");
-                } else {
-                    //showToast("Button Edit clicked");
-                }
-                fam.close(true);
+            public void onCancel() {
+
             }
-        };
+
+            @Override
+            public void onError(FacebookException error) {
+
+            }
+        });
+
     }
-    private void showToast(String msg) {
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-    }
+
+
+public void graphRequest(AccessToken token){
+        GraphRequest request = GraphRequest.newMeRequest(
+                token,
+                new GraphRequest.GraphJSONObjectCallback() {
+                    @Override
+                    public void onCompleted(JSONObject object, GraphResponse response) {
+                        //loginButton.setVisibility(View.INVISIBLE);
+                        Intent intent = new Intent(PublisherPostActivity
+                                .this,PageActivity.class);
+                        startActivity(intent);
+                        finish();
+
+                        Toast.makeText(getApplicationContext(),object.toString(),Toast.LENGTH_LONG).show();
+
+                    }
+                });
+    Bundle parameters = new Bundle();
+    parameters.putString("fields", "id");
+    request.setParameters(parameters);
+    request.executeAsync();
+
+}
+
+
 }

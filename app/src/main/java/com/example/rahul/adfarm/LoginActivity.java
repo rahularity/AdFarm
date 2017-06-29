@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -21,7 +20,6 @@ import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -48,7 +46,7 @@ public class LoginActivity extends Activity implements View.OnClickListener{
         register = (Button) findViewById(R.id.btnregister);
         etphone = (EditText) findViewById(R.id.etphone);
         etPass = (EditText) findViewById(R.id.etPass);
-        LoginButton loginButton = (LoginButton) findViewById(R.id.facebook);
+        LoginButton loginButton = (LoginButton) findViewById(R.id.facebook_login);
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {

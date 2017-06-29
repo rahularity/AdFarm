@@ -34,7 +34,6 @@ dependencies {
     compile 'com.android.support:palette-v7:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.mostafagazar:customshapeimageview:1.0.4'
-    compile 'com.github.clans:fab:1.6.4'
     compile 'com.facebook.android:facebook-android-sdk:4.0.0'
     compile 'com.msg91.sendotp.library:library:2.9'
     compile 'com.android.support:support-v4:25.3.1'

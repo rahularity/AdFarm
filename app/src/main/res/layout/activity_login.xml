@@ -79,7 +79,7 @@
          android:layout_alignParentStart="true"
          android:layout_marginBottom="26dp" /> -->
     <com.facebook.login.widget.LoginButton
-        android:id="@+id/facebook"
+        android:id="@+id/facebook_login"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/btnLogin"
