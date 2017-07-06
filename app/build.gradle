@@ -17,6 +17,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE-FIREBASE.txt'
+        exclude 'META-INF/NOTICE'
+    }
 }
 
 repositories {
@@ -37,5 +43,10 @@ dependencies {
     compile 'com.facebook.android:facebook-android-sdk:4.0.0'
     compile 'com.msg91.sendotp.library:library:2.9'
     compile 'com.android.support:support-v4:25.3.1'
+    compile 'com.firebaseui:firebase-ui:2.0.1'
+    compile 'com.google.firebase:firebase-database:11.0.2'
+    compile 'com.google.firebase:firebase-storage:11.0.2'
+    compile 'com.google.firebase:firebase-auth:11.0.2'
     testCompile 'junit:junit:4.12'
 }
+apply plugin: 'com.google.gms.google-services'

@@ -11,7 +11,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar">
         <activity android:name=".AdvertiserPostForm" />
         <activity android:name=".AdvertiserPostActivity" />
 
@@ -21,39 +21,41 @@
             android:exported="true" />
 
         <activity android:name=".BrandDescription" />
-
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
-        <!--<activity-->
-            <!--android:name="com.facebook.CustomTabActivity"-->
-            <!--android:exported="true">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.VIEW" />-->
+        <!-- <activity -->
+        <!-- android:name="com.facebook.CustomTabActivity" -->
+        <!-- android:exported="true"> -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="android.intent.action.VIEW" /> -->
 
-                <!--<category android:name="android.intent.category.DEFAULT" />-->
-                <!--<category android:name="android.intent.category.BROWSABLE" />-->
 
-                <!--<data android:scheme="@string/fb_login_protocol_scheme" />-->
-            <!--</intent-filter>-->
-        <!--</activity>-->
+        <!-- <category android:name="android.intent.category.DEFAULT" /> -->
+        <!-- <category android:name="android.intent.category.BROWSABLE" /> -->
+
+
+        <!-- <data android:scheme="@string/fb_login_protocol_scheme" /> -->
+        <!-- </intent-filter> -->
+        <!-- </activity> -->
         <activity android:name=".PublisherPostActivity" />
         <activity android:name=".SplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoginActivity" />
 
-        <meta-data
+        <meta-data xmlns:tools="http://schemas.android.com/tools"
             android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id" />
+            android:value="@string/facebook_app_id"
+            tools:replace="android:value" />
 
         <activity android:name=".UserSelectionActivity" />
-        <activity android:name=".PageActivity"></activity>
+        <activity android:name=".PageActivity" />
+        <activity android:name=".AdvertiserPostForm2" />
+        <activity android:name=".OtpAuth"></activity>
     </application>
 
 </manifest>

@@ -12,6 +12,7 @@
         android:layout_gravity="center"
         android:layout_margin="10dp"
         android:text="Facebook"
+        android:background="#3b5998"
         android:textColor="@android:color/white"
         android:textSize="15dp"
         android:textStyle="bold"/>
@@ -22,6 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_margin="10dp"
+        android:background="#bb0000"
         android:text="YouTube"
         android:textColor="@android:color/white"
         android:textSize="15dp"

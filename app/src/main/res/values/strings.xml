@@ -2,7 +2,7 @@
     <string name="app_name">AdFarm</string>
     <string name="advertiserDetail"><u>ADVERTISER\'S DETAILS</u></string>
     <string name="brandDetail"><u>ADVERTISEMENT DETAILS</u></string>
-    <string name="platform_unknown">Unknown</string>
+    <string name="platform_unknown">Select</string>
     <string name="platform_facebook">Facebook</string>
     <string name="platform_instagram">Instagram</string>
     <string name="platform_youtube">YouTube</string>

@@ -7,27 +7,41 @@ import android.provider.ContactsContract;
  */
 
 public class Advertisement {
-    private String mBrandName;
-    private String mProductName = NO_TEXT_PROVIDED ;
-    private String mProductCategory ;
-    private static  final String NO_TEXT_PROVIDED = "NO_IMAGE";
+    private String BrandName;
+    private String ProductName;
+    private String ProductCategory ;
 
-    public Advertisement(String brandName, String productCategory, String productName){
-        mBrandName = brandName;
-        mProductCategory = productCategory;
-        mProductName = productName;
+    public Advertisement(){}
+    public Advertisement(String BrandName, String ProductCategory, String ProductName){
+        this.BrandName = BrandName;
+        this.ProductCategory =ProductCategory;
+        this.ProductName = ProductName;
     }
 
-    public Advertisement(String brandName, String productCategory){
-        mProductCategory = productCategory;
-        mBrandName = brandName;
+
+    public String getBrandName() {
+        return BrandName;
     }
 
-    public String getmBrandName(){return mBrandName;}
-    public String getmProductName(){return mProductName;}
-    public String getmProductCategory(){return mProductCategory;}
-
-    public boolean hasText() {
-        return mProductName != NO_TEXT_PROVIDED;
+    public void setBrandName(String brandName) {
+        BrandName = brandName;
     }
+
+    public String getProductName() {
+        return ProductName;
+    }
+
+    public void setProductName(String productName) {
+        ProductName = productName;
+    }
+
+    public String getProductCategory() {
+        return ProductCategory;
+    }
+
+    public void setProductCategory(String productCategory) {
+        ProductCategory = productCategory;
+    }
+
+
 }

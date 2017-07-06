@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:background="@color/colorPrimary"
+    android:layout_height="match_parent">
+
+    <ImageButton
+        android:id="@+id/at"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="25dp"
+        android:background="@drawable/add_btn"/>
+
+    <EditText
+        android:id="@+id/et"
+        android:layout_below="@+id/at"
+        android:hint="Enter the product Description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:padding="25dp"
+        android:background="@drawable/text_background"
+        android:ems="10"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:inputType="textMultiLine" />
+
+    <Button
+        android:id="@+id/bt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="25dp"
+        android:text="DONE"
+        android:background="@drawable/description_button_background"/>
+
+
+</RelativeLayout>

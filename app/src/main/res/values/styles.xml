@@ -8,6 +8,15 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="ThemeOverlay.MyDarkButton" parent="ThemeOverlay.AppCompat.Dark">
+        <item name="colorButtonNormal">@color/colorAccent</item>
+        <item name="android:layout_marginRight">4dp</item>
+        <item name="android:layout_marginLeft">4dp</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+
+
     <style name="HeadingStyle">
         <item name="android:layout_width">0dp</item>
         <item name="android:paddingTop">16dp</item>
@@ -22,6 +31,12 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:fontFamily">sans-serif-light</item>
         <item name="android:textAppearance">?android:textAppearanceMedium</item>
+    </style>
+
+    <style name="MyAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">#FFC107</item>
+        <item name="android:textColorPrimary">#FFFFFF</item>
+        <item name="android:background">#3399FF</item>
     </style>
 
     <style name="FloatingLabelStyle" parent="@android:style/TextAppearance">

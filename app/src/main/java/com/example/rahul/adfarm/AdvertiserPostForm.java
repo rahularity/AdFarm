@@ -42,7 +42,7 @@ public class AdvertiserPostForm extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_advertiser_post_form);
+        setContentView(R.layout.activity_advertiser_post_form2);
 
         //Displaying TextInputLayout Error
 //        TextInputLayout lNameLayout = (TextInputLayout) findViewById(R.id.lNameLayout);
