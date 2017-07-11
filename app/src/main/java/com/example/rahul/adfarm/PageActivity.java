@@ -59,6 +59,11 @@ public class PageActivity extends AppCompatActivity {
         ListView pageListView = (ListView) findViewById(R.id.list);
         adapter = new PageAdapter(this, pages);
         pageListView.setAdapter(adapter);
+        pageListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        //pageListView.setItemsCanFocus(false);
+
+
+
         adapter.notifyDataSetChanged();
     }
 }

@@ -68,7 +68,7 @@ public class OtpAuth extends AppCompatActivity implements View.OnClickListener {
 
         pd = new ProgressDialog(this);
         pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        pd.setMessage("sending OTP please wait motherfucker...");
+        pd.setMessage("sending OTP please wait...");
 
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override

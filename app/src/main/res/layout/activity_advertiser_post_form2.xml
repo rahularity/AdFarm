@@ -1,19 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
-    android:padding="25dp">
 
-    <ScrollView
+ <ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimary">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_margin="25dp">
 
             <TextView
                 android:id="@+id/textView3"
@@ -35,7 +32,7 @@
                 android:background="@drawable/text_background"
                 android:ems="10"
                 android:hint="First Name"
-                android:inputType="textPersonName"
+                android:inputType="textCapSentences"
                 android:padding="15dp" />
 
             <EditText
@@ -46,7 +43,7 @@
                 android:background="@drawable/text_background"
                 android:ems="10"
                 android:hint="Last Name"
-                android:inputType="textPersonName"
+                android:inputType="textCapSentences"
                 android:padding="15dp" />
 
             <EditText
@@ -57,7 +54,6 @@
                 android:background="@drawable/text_background"
                 android:ems="10"
                 android:hint="Email"
-                android:inputType="textPersonName"
                 android:padding="15dp" />
 
             <TextView
@@ -79,7 +75,7 @@
                 android:background="@drawable/text_background"
                 android:ems="10"
                 android:hint="Your Brand Name"
-                android:inputType="textPersonName"
+                android:inputType="textCapSentences"
                 android:padding="15dp" />
 
             <EditText
@@ -101,16 +97,43 @@
                 android:background="@drawable/text_background"
                 android:ems="10"
                 android:hint="Category"
-                android:inputType="textPersonName"
+                android:inputType="textCapSentences"
                 android:padding="15dp" />
 
-            <Button
-                android:id="@+id/add_brand_description"
+            <TextView
+                android:id="@+id/txtview4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:background="@drawable/description_button_background"
-                android:text="Add Brand Description" />
+                android:textSize="24sp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="20dp"
+                android:textStyle="bold|italic"
+                android:fontFamily="sans-serif"
+                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
+                android:textColor="@android:color/black"
+                android:text="Brand Description :" />
+
+            <ImageButton
+                android:id="@+id/at"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:scaleType="centerCrop"
+                android:background="@drawable/add_btn"/>
+
+            <EditText
+                android:id="@+id/et"
+                android:layout_below="@+id/at"
+                android:hint="Enter the product Description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:padding="25dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/text_background"
+                android:ems="10"
+                android:inputType="textMultiLine" />
+
+
 
             <LinearLayout
                 android:id="@+id/platform_category"
@@ -155,13 +178,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="DONE"
-                android:layout_margin="5dp"
+                android:layout_marginBottom="25dp"
                 android:background="@drawable/description_button_background"/>
 
 
         </LinearLayout>
 
     </ScrollView>
-
-
-</RelativeLayout>

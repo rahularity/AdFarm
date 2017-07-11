@@ -6,6 +6,9 @@ import android.content.CursorLoader;
 import android.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.SimpleCursorAdapter;
 
 import android.content.Context;
@@ -46,6 +49,8 @@ private RecyclerView mAdvertisementList;
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
     private String UserId;
+    private RecyclerView recyclerView;
+    private RelativeLayout empty_view;
     ProgressDialog dialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,10 +64,13 @@ private RecyclerView mAdvertisementList;
 
         Toast.makeText(this,UserId,Toast.LENGTH_LONG).show();
 
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("users").child(UserId).child("advertisers");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("users").child("advertisers").child(UserId);
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot != null){
+                    empty_view.setVisibility(View.GONE);
+                }
                 dialog.dismiss();
             }
 
@@ -73,6 +81,7 @@ private RecyclerView mAdvertisementList;
         });
 
 
+        empty_view = (RelativeLayout)findViewById(R.id.empty_view);
         mAdvertisementList = (RecyclerView)findViewById(R.id.advertisement_list);
      //   mAdvertisementList.setHasFixedSize(true);
         mAdvertisementList.setLayoutManager(new LinearLayoutManager(this));
@@ -86,7 +95,6 @@ private RecyclerView mAdvertisementList;
                 startActivity(intent);
             }
         });
-
     }
 
     @Override
@@ -102,21 +110,39 @@ private RecyclerView mAdvertisementList;
         ){
             @Override
             protected void populateViewHolder(AdvertisementViewHolder viewHolder, Advertisement model, int position) {
+
+                //this is for getting the random key generated for each post
+                final String post_key = getRef(position).getKey();
+
                 viewHolder.setBrandName(model.getBrandName());
                 viewHolder.setProductName(model.getProductName());
                 viewHolder.setProductCategory(model.getProductCategory());
+
+
+                viewHolder.editBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(AdvertiserPostActivity.this, AdvertiserPostForm2.class);
+                        intent.putExtra("Key",post_key);
+                        startActivity(intent);
+                    }
+                });
+
             }
         };
+
         mAdvertisementList.setAdapter(firebaseRecyclerAdapter);
     }
 
     public static class AdvertisementViewHolder extends RecyclerView.ViewHolder{
 
+        ImageButton editBtn;
         View mView;
 
         public AdvertisementViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
+            editBtn = (ImageButton) mView.findViewById(R.id.edit_button);
         }
 
         public void setBrandName(String brandName) {
@@ -135,6 +161,8 @@ private RecyclerView mAdvertisementList;
         }
 
     }
+
+
 
 
 }

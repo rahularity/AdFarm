@@ -1,6 +1,7 @@
 package com.example.rahul.adfarm;
 
         import android.app.Dialog;
+        import android.app.ProgressDialog;
         import android.content.Context;
         import android.content.DialogInterface;
         import android.content.Intent;
@@ -9,10 +10,14 @@ package com.example.rahul.adfarm;
         import android.support.v7.app.AlertDialog;
         import android.support.v7.app.AppCompatActivity;
         import android.os.Bundle;
+        import android.support.v7.widget.LinearLayoutManager;
+        import android.support.v7.widget.RecyclerView;
         import android.view.Gravity;
         import android.view.LayoutInflater;
         import android.view.View;
         import android.widget.Button;
+        import android.widget.ImageButton;
+        import android.widget.RelativeLayout;
         import android.widget.TextView;
         import android.widget.Toast;
         import com.facebook.AccessToken;
@@ -25,6 +30,12 @@ package com.example.rahul.adfarm;
         import com.facebook.login.LoginManager;
         import com.facebook.login.LoginResult;
         import com.facebook.login.widget.LoginButton;
+        import com.firebase.ui.database.FirebaseRecyclerAdapter;
+        import com.google.firebase.database.DataSnapshot;
+        import com.google.firebase.database.DatabaseError;
+        import com.google.firebase.database.DatabaseReference;
+        import com.google.firebase.database.FirebaseDatabase;
+        import com.google.firebase.database.ValueEventListener;
 
         import org.json.JSONArray;
         import org.json.JSONObject;
@@ -37,10 +48,14 @@ package com.example.rahul.adfarm;
         import static com.example.rahul.adfarm.R.layout.custom_dialog;
 
 public class PublisherPostActivity extends AppCompatActivity {
+    private RecyclerView mPromotersList;
     final Context context = this;
     private Button facebookText;
     private Button YoutubeText;
     private CallbackManager callbackManager;
+    private RelativeLayout empty_view;
+    ProgressDialog dialog;
+    DatabaseReference mRef,mFacebook;
 
     @Override
     protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
@@ -57,6 +72,40 @@ public class PublisherPostActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_publisher_post);
+
+
+
+        //dialog on opening the activity
+        dialog = new ProgressDialog(this);
+        dialog.setMessage("Loading list please wait...");
+        dialog.show();
+
+
+
+
+        empty_view = (RelativeLayout)findViewById(R.id.empty_view);
+        mPromotersList = (RecyclerView)findViewById(R.id.promoters_list);
+        mPromotersList.setLayoutManager(new LinearLayoutManager(this));
+
+        mRef = FirebaseDatabase.getInstance().getReference();
+        mFacebook = mRef.child("users").child("publishers").child("facebook");
+        mFacebook.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot != null){
+                    empty_view.setVisibility(View.GONE);
+                }
+                dialog.dismiss();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+
 
         callbackManager = CallbackManager.Factory.create();
         //loginButton = (LoginButton) findViewById(R.id.login_button);
@@ -114,7 +163,57 @@ public class PublisherPostActivity extends AppCompatActivity {
     }
 
 
-public void graphRequest(AccessToken token){
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        FirebaseRecyclerAdapter<FacebookPageInfo,FacebookViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<FacebookPageInfo, FacebookViewHolder>(
+                FacebookPageInfo.class,
+                R.layout.facebook_page_info_blueprint,
+                FacebookViewHolder.class,
+                mFacebook
+        ) {
+            @Override
+            protected void populateViewHolder(FacebookViewHolder viewHolder, FacebookPageInfo model, int position) {
+
+                viewHolder.setPageName(model.getPageName());
+                viewHolder.setPageCategory(model.getPageCategory());
+                viewHolder.setFanCount(model.getFanCount());
+
+            }
+        };
+
+        mPromotersList.setAdapter(firebaseRecyclerAdapter);
+    }
+
+    public static class FacebookViewHolder extends RecyclerView.ViewHolder{
+
+
+        View mView;
+
+        public FacebookViewHolder(View itemView) {
+            super(itemView);
+            mView = itemView;
+        }
+
+        public void setPageName(String pageName) {
+            TextView brand_name = (TextView) mView.findViewById(R.id.page_name);
+            brand_name.setText(pageName);
+        }
+
+        public void setPageCategory(String pageCategory) {
+            TextView product_name = (TextView)mView.findViewById(R.id.page_category) ;
+            product_name.setText(pageCategory);
+        }
+
+        public void setFanCount(String fanCount) {
+            TextView category = (TextView)mView.findViewById(R.id.fan_count) ;
+            category.setText(fanCount);
+        }
+
+    }
+
+    public void graphRequest(AccessToken token){
         GraphRequest request = GraphRequest.newMeRequest(
                 token,
                 new GraphRequest.GraphJSONObjectCallback() {

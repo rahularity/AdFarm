@@ -52,6 +52,9 @@
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_add_advertiser"
         android:layout_width="wrap_content"
+        android:src="@drawable/add"
+        android:elevation="5dp"
+        android:background="@color/colorAccent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
