@@ -49,7 +49,6 @@ private RecyclerView mAdvertisementList;
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
     private String UserId;
-    private RecyclerView recyclerView;
     private RelativeLayout empty_view;
     ProgressDialog dialog;
     @Override
@@ -125,6 +124,14 @@ private RecyclerView mAdvertisementList;
                         Intent intent = new Intent(AdvertiserPostActivity.this, AdvertiserPostForm2.class);
                         intent.putExtra("Key",post_key);
                         startActivity(intent);
+                    }
+                });
+
+                viewHolder.mView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent(AdvertiserPostActivity.this,FacebookSuggestionActivity.class);
+                        startActivity(i);
                     }
                 });
 

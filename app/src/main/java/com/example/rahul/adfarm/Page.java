@@ -18,5 +18,6 @@ public class Page {
         mFanCount = fanCount;
         mBox = box;
     }
+
 }
 
