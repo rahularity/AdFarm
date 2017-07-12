@@ -31,10 +31,12 @@ package com.example.rahul.adfarm;
         import com.facebook.login.LoginResult;
         import com.facebook.login.widget.LoginButton;
         import com.firebase.ui.database.FirebaseRecyclerAdapter;
+        import com.google.firebase.auth.FirebaseAuth;
         import com.google.firebase.database.DataSnapshot;
         import com.google.firebase.database.DatabaseError;
         import com.google.firebase.database.DatabaseReference;
         import com.google.firebase.database.FirebaseDatabase;
+        import com.google.firebase.database.Query;
         import com.google.firebase.database.ValueEventListener;
 
         import org.json.JSONArray;
@@ -55,7 +57,10 @@ public class PublisherPostActivity extends AppCompatActivity {
     private CallbackManager callbackManager;
     private RelativeLayout empty_view;
     ProgressDialog dialog;
-    DatabaseReference mRef,mFacebook;
+    FirebaseAuth mAuth;
+    private Query mQueryCurrentUser;
+    DatabaseReference mRef,mFacebook,mCurrentUser;
+    String Uid;
 
     @Override
     protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
@@ -83,12 +88,16 @@ public class PublisherPostActivity extends AppCompatActivity {
 
 
 
+        mAuth = FirebaseAuth.getInstance();
+        Uid = mAuth.getCurrentUser().getUid();
         empty_view = (RelativeLayout)findViewById(R.id.empty_view);
         mPromotersList = (RecyclerView)findViewById(R.id.promoters_list);
         mPromotersList.setLayoutManager(new LinearLayoutManager(this));
 
         mRef = FirebaseDatabase.getInstance().getReference();
         mFacebook = mRef.child("users").child("publishers").child("facebook");
+        mQueryCurrentUser = mFacebook.orderByChild("Uid").equalTo(Uid);
+
         mFacebook.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -171,7 +180,7 @@ public class PublisherPostActivity extends AppCompatActivity {
                 FacebookPageInfo.class,
                 R.layout.facebook_page_info_blueprint,
                 FacebookViewHolder.class,
-                mFacebook
+                mQueryCurrentUser
         ) {
             @Override
             protected void populateViewHolder(FacebookViewHolder viewHolder, FacebookPageInfo model, int position) {

@@ -5,18 +5,18 @@ package com.example.rahul.adfarm;
  */
 
 public class Page {
-    private String mName;
-    private String mCategory;
-    private String mFanCount;
+     String mId;
+     String mName;
+     String mCategory;
+     String mFanCount;
+     boolean mBox;
 
-    public Page(String name, String category, String fanCount){
+    public Page(String id, String name, String category, String fanCount, boolean box){
+        mId = id;
         mName = name;
         mCategory = category;
         mFanCount = fanCount;
+        mBox = box;
     }
-
-    public String getmName(){return mName;}
-    public String getmCategory(){return mCategory;}
-    public String getmFanCount(){return mFanCount;}
 }
 
