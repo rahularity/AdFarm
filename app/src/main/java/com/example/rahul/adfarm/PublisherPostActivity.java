@@ -185,10 +185,22 @@ public class PublisherPostActivity extends AppCompatActivity {
             @Override
             protected void populateViewHolder(FacebookViewHolder viewHolder, FacebookPageInfo model, int position) {
 
+                final String fb_key = getRef(position).getKey();
+
                 viewHolder.setPageName(model.getPageName());
                 viewHolder.setPageCategory(model.getPageCategory());
                 viewHolder.setFanCount(model.getFanCount());
 
+                viewHolder.mView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        Intent intent = new Intent(PublisherPostActivity.this,InterestedAd.class);
+                        intent.putExtra("Key",fb_key);
+                        startActivity(intent);
+
+                    }
+                });
             }
         };
 

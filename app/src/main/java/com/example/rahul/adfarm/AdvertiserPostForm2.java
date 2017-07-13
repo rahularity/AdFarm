@@ -52,7 +52,7 @@ public class AdvertiserPostForm2 extends AppCompatActivity {
     private EditText productCategory;
     private Button saveBtn;
     private FirebaseStorage mFirebaseStorage;
-    private DatabaseReference mRef,mAd,mRefUser,newPost,mAdEdit;
+    private DatabaseReference mRef,mAd,mRefUser,newPost,prevPost,mAdEdit;
     private FirebaseAuth mAuth,currentUser;
     private String descText,post_key = null;
     private static final int PHOTO_PICKER_ID = 0;
@@ -61,8 +61,8 @@ public class AdvertiserPostForm2 extends AppCompatActivity {
     private Uri uri,imageUrl;
     private Uri imageUri = null;
     private EditText et;
-    ProgressDialog mProgress_save_to_database , mProgress_get_from_database;
-    StorageReference mStorage,childStorage;
+    private ProgressDialog mProgress_save_to_database , mProgress_get_from_database;
+    private StorageReference mStorage,childStorage;
     private Spinner platform;
     private String mPlatform = "Select";
 
@@ -77,46 +77,11 @@ public class AdvertiserPostForm2 extends AppCompatActivity {
 
 
 
+
         mStorage = FirebaseStorage.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
         String UserID = mAuth.getCurrentUser().getUid();
-        //when intent called for editing the changes
-        post_key = getIntent().getStringExtra("Key");
-//        Toast.makeText(this,post_key,Toast.LENGTH_LONG).show();
 
-        if(post_key != null){
-
-            mAdEdit = FirebaseDatabase.getInstance().getReference().child("users")
-                    .child("advertisers")
-                    .child(UserID)
-                    .child(post_key);
-
-            mAdEdit.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-
-
-                    firstName.setText(dataSnapshot.child("FirstName").getValue().toString());
-                    lastName.setText(dataSnapshot.child("LastName").getValue().toString());
-                    email.setText(dataSnapshot.child("Email").getValue().toString());
-                    brandName.setText(dataSnapshot.child("BrandName").getValue().toString());
-                    productName.setText(dataSnapshot.child("ProductName").getValue().toString());
-                    productCategory.setText(dataSnapshot.child("ProductCategory").getValue().toString());
-                    et.setText(dataSnapshot.child("Description").getValue().toString());
-                    if(dataSnapshot.child("ImageUrl").getValue().toString()!=null){
-                        Picasso.with(context).load(dataSnapshot.child("ImageUrl").getValue().toString()).into(attach);
-                    }
-
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                    Toast.makeText(context,"Something went wrong... Try again",Toast.LENGTH_LONG).show();
-
-                }
-            });
-        }
 
 
 
@@ -137,8 +102,6 @@ public class AdvertiserPostForm2 extends AppCompatActivity {
         saveBtn = (Button)findViewById(R.id.save_advertisement) ;
         et = (EditText)findViewById(R.id.et);
         attach=(ImageView) findViewById(R.id.at);
-
-
         attach.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -148,6 +111,51 @@ public class AdvertiserPostForm2 extends AppCompatActivity {
             }
         });
 
+
+//          when intent called for editing the changes
+        post_key = getIntent().getStringExtra("Key");
+//        Toast.makeText(this,post_key,Toast.LENGTH_LONG).show();
+
+        if(post_key != null){
+
+            mProgress_get_from_database.setMessage("Loading...");
+            mProgress_get_from_database.show();
+
+            prevPost = mAd.child(post_key);
+
+            mAdEdit = FirebaseDatabase.getInstance().getReference().child("users")
+                    .child("advertisers")
+                    .child(UserID)
+                    .child(post_key);
+
+            mAdEdit.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+
+                    firstName.setText(dataSnapshot.child("FirstName").getValue().toString());
+                    lastName.setText(dataSnapshot.child("LastName").getValue().toString());
+                    email.setText(dataSnapshot.child("Email").getValue().toString());
+                    brandName.setText(dataSnapshot.child("BrandName").getValue().toString());
+                    productName.setText(dataSnapshot.child("ProductName").getValue().toString());
+                    productCategory.setText(dataSnapshot.child("ProductCategory").getValue().toString());
+                    et.setText(dataSnapshot.child("Description").getValue().toString());
+                    imageUri = Uri.parse(dataSnapshot.child("ImageUrl").getValue().toString());
+                    if(dataSnapshot.child("ImageUrl").getValue().toString()!=null){
+                        Picasso.with(context).load(dataSnapshot.child("ImageUrl").getValue().toString()).into(attach);
+                    }
+                    mProgress_get_from_database.dismiss();
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                    Toast.makeText(context,"Something went wrong... Try again",Toast.LENGTH_LONG).show();
+
+                }
+            });
+        }
 
 
         setupSpinner();
@@ -172,27 +180,54 @@ public class AdvertiserPostForm2 extends AppCompatActivity {
         String category = productCategory.getText().toString().trim();
         descText = et.getText().toString().trim();
 
+        if(post_key != null){
+            prevPost.child("FirstName").setValue(fn);
+            prevPost.child("LastName").setValue(ln);
+            prevPost.child("Email").setValue(mail);
+            prevPost.child("BrandName").setValue(brand);
+            prevPost.child("ProductName").setValue(product);
+            prevPost.child("ProductCategory").setValue(category);
+            prevPost.child("Platform").setValue(mPlatform);
+            prevPost.child("Description").setValue(descText);
+            childStorage.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-        newPost.child("FirstName").setValue(fn);
-        newPost.child("LastName").setValue(ln);
-        newPost.child("Email").setValue(mail);
-        newPost.child("BrandName").setValue(brand);
-        newPost.child("ProductName").setValue(product);
-        newPost.child("ProductCategory").setValue(category);
-        newPost.child("Platform").setValue(mPlatform);
-        newPost.child("Description").setValue(descText);
-        childStorage.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Toast.makeText(AdvertiserPostForm2.this,"upload done",Toast.LENGTH_LONG).show();
+                    imageUrl = taskSnapshot.getDownloadUrl();
+                    newPost.child("ImageUrl").setValue(imageUrl.toString());
+                    mProgress_save_to_database.dismiss();
+                    finish();
+                }
+            });
+        }
 
-                Toast.makeText(AdvertiserPostForm2.this,"upload done",Toast.LENGTH_LONG).show();
-                imageUrl = taskSnapshot.getDownloadUrl();
-                newPost.child("ImageUrl").setValue(imageUrl.toString());
-                mProgress_save_to_database.dismiss();
-                finish();
-            }
-        });
+        else{
+
+            newPost.child("FirstName").setValue(fn);
+            newPost.child("LastName").setValue(ln);
+            newPost.child("Email").setValue(mail);
+            newPost.child("BrandName").setValue(brand);
+            newPost.child("ProductName").setValue(product);
+            newPost.child("ProductCategory").setValue(category);
+            newPost.child("Platform").setValue(mPlatform);
+            newPost.child("Description").setValue(descText);
+            childStorage.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                    Toast.makeText(AdvertiserPostForm2.this,"upload done",Toast.LENGTH_LONG).show();
+                    imageUrl = taskSnapshot.getDownloadUrl();
+                    newPost.child("ImageUrl").setValue(imageUrl.toString());
+                    mProgress_save_to_database.dismiss();
+                    finish();
+                }
+            });
+        }
     }
+
+
+
 
     private void setupSpinner() {
         // Create adapter for spinner. The list options are from the String array it will use

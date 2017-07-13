@@ -60,7 +60,8 @@
         <activity android:name=".PageActivity" />
         <activity android:name=".AdvertiserPostForm2" />
         <activity android:name=".OtpAuth" />
-        <activity android:name=".FacebookSuggestionActivity"></activity>
+        <activity android:name=".FacebookSuggestionActivity" />
+        <activity android:name=".InterestedAd"></activity>
     </application>
 
 </manifest>

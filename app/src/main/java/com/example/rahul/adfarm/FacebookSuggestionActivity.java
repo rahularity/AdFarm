@@ -20,9 +20,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class FacebookSuggestionActivity extends AppCompatActivity {
-    private DatabaseReference mRef,mFb;
+    private DatabaseReference mRef,mFb,mInterest;
     private RecyclerView mFbPageList;
     private RelativeLayout empty_view;
+    boolean mInterested = false;
+    private String post_key = null;
     ProgressDialog dialog;
 
 
@@ -40,6 +42,10 @@ public class FacebookSuggestionActivity extends AppCompatActivity {
         mFbPageList.setLayoutManager(new LinearLayoutManager(this));
         mRef = FirebaseDatabase.getInstance().getReference();
         mFb = mRef.child("users").child("publishers").child("facebook");
+        mInterest = FirebaseDatabase.getInstance().getReference().child("interests");
+        mInterest.keepSynced(true);
+        mFb.keepSynced(true);
+        mRef.keepSynced(true);
 
 
         mFb.addValueEventListener(new ValueEventListener() {
@@ -57,6 +63,9 @@ public class FacebookSuggestionActivity extends AppCompatActivity {
             }
         });
 
+
+        post_key = getIntent().getStringExtra("Key");
+
     }
 
     @Override
@@ -64,23 +73,57 @@ public class FacebookSuggestionActivity extends AppCompatActivity {
         super.onStart();
 
         FirebaseRecyclerAdapter<Page2,SuggestionViewHolder> firebaseRecyclerAdapter= new FirebaseRecyclerAdapter<Page2,SuggestionViewHolder>(
-
                 Page2.class,
                 R.layout.facebook_suggestion_blueprint,
                 SuggestionViewHolder.class,
                 mFb
         ){
             @Override
-            protected void populateViewHolder(SuggestionViewHolder viewHolder, Page2 model, int position) {
+            protected void populateViewHolder(SuggestionViewHolder viewHolder, final Page2 model, final int position) {
                // final String post_key = getRef(position).getKey();
 
+                final String fb_key = getRef(position).getKey();
                 viewHolder.setPageName(model.getPageName());
                 viewHolder.setPageCategory(model.getPageCategory());
                 viewHolder.setFanCount(model.getFanCount());
 
+                viewHolder.setInterestButton(fb_key,post_key);
+
                 viewHolder.interestBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+
+                        mInterested = true;
+
+
+
+                            mInterest.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                    if(mInterested) {
+
+                                        if (dataSnapshot.child(fb_key).hasChild(post_key)) {
+
+                                            mInterest.child(fb_key).child(post_key).removeValue();
+                                            mInterested = false;
+
+                                        } else {
+
+                                            mInterest.child(fb_key).child(post_key).setValue("rahul");
+                                            mInterested = false;
+
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+
+
 
                     }
                 });
@@ -94,13 +137,42 @@ public class FacebookSuggestionActivity extends AppCompatActivity {
 
     public static class SuggestionViewHolder extends RecyclerView.ViewHolder{
 
-        Button interestBtn;
+        DatabaseReference mInterest;
+
+        ImageButton interestBtn;
         View mView;
+
+
 
         public SuggestionViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
-            interestBtn = (Button) mView.findViewById(R.id.interest_btn);
+            interestBtn = (ImageButton) mView.findViewById(R.id.interest_btn);
+            mInterest = FirebaseDatabase.getInstance().getReference().child("interests");
+            mInterest.keepSynced(true);
+        }
+
+        public void setInterestButton(final String fb_key, final String post_key){
+
+            mInterest.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.child(fb_key).hasChild(post_key)){
+
+                        interestBtn.setImageResource(R.drawable.heart_filled);
+
+                    }else{
+
+                        interestBtn.setImageResource(R.drawable.heart_blank);
+
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
         }
 
         public void setPageName(String pageName) {
